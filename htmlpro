@@ -1,0 +1,338 @@
+<!-- ...existing code... -->
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Day 1-100 Interactive Vocabulary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <style>
+        /* Theme variables */
+        :root {
+            --bg: #FDF8F0;              /* Warm neutral background */
+            --text: #2D3748;            /* Primary text */
+            --muted: #718096;           /* Muted text */
+            --accent: #ED8936;          /* Warm accent (orange) */
+            --accent-strong: #DD6B20;   /* Stronger accent */
+            --card-bg: #FFFFFF;         /* Card front */
+            --card-back: #60A5FA;       /* Card back (blue accent) */
+            --tab-active-bg: var(--accent-strong);
+            --tab-active-color: #ffffff;
+        }
+
+        /* Dark theme override */
+        :root[data-theme="dark"] {
+            --bg: #0F172A;              /* Dark background */
+            --text: #E6EEF8;            /* Light text */
+            --muted: #9AA7BF;           /* Muted light */
+            --accent: #60A5FA;          /* Cool accent */
+            --accent-strong: #2563EB;
+            --card-bg: #0B1220;
+            --card-back: #1E293B;
+            --tab-active-bg: var(--accent-strong);
+            --tab-active-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Padauk', 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        .text-muted { color: var(--muted); }
+
+        .tab-active {
+            background-color: var(--tab-active-bg);
+            color: var(--tab-active-color);
+            border-color: var(--tab-active-bg);
+        }
+
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.is-flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .flip-card-front {
+            background-color: var(--card-bg);
+            color: var(--text);
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .flip-card-back {
+            background-color: var(--card-back);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .icon { font-size: 1.5rem; margin-right: 8px; }
+
+        /* Theme toggle button */
+        #theme-toggle {
+            background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            border: 1px solid rgba(0,0,0,0.06);
+            padding: 0.5rem 0.75rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            gap: 0.5rem;
+            align-items: center;
+            cursor: pointer;
+        }
+        :root[data-theme="dark"] #theme-toggle {
+            border-color: rgba(255,255,255,0.06);
+            background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        }
+
+        /* small responsive adjustments for cards */
+        .flip-card.h-32 { height: 8rem; }
+        .flip-card.h-36 { height: 9rem; }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="flex items-center justify-between mb-8">
+            <div class="text-left">
+                <h1 class="text-3xl sm:text-4xl font-bold" id="app-title">IELTS Day 1 ဝေါဟာရ လေ့လာရန်</h1>
+                <p class="text-muted mt-2">အပြန်အလှန်တုံ့ပြန်လေ့လာနိုင်သော Application</p>
+            </div>
+
+            <!-- Theme switcher -->
+            <div class="flex items-center space-x-3">
+                <label for="day-select" class="hidden sm:block font-semibold text-muted mr-2">လေ့လာမည့်နေ့ရက်ရွေးပါ:</label>
+                <button id="theme-toggle" aria-pressed="false" title="Toggle theme">
+                    <span id="theme-icon">🌤️</span>
+                    <span id="theme-label" class="text-sm">Warm</span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div class="w-full max-w-4xl mx-auto">
+                <div class="mb-6 flex flex-col sm:flex-row items-center justify-between">
+                    <div class="mb-4 sm:mb-0">
+                        <label for="day-select" class="font-semibold text-gray-700 mr-2">လေ့လာမည့်နေ့ရက်ရွေးပါ:</label>
+                        <select id="day-select" class="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <nav class="flex space-x-2 sm:space-x-4 border-b border-gray-200" id="tabs">
+                        <button data-tab="vocabulary" class="tab-btn tab-active py-3 px-4 sm:px-6 font-semibold text-gray-600 rounded-t-lg border-b-2 border-transparent hover:bg-gray-200 transition"><span class="icon">📖</span>ဝေါဟာရ</button>
+                        <button data-tab="phrases" class="tab-btn py-3 px-4 sm:px-6 font-semibold text-gray-600 rounded-t-lg border-b-2 border-transparent hover:bg-gray-200 transition"><span class="icon">💬</span>အသုံးအနှုန်းများ</button>
+                        <button data-tab="grammar" class="tab-btn py-3 px-4 sm:px-6 font-semibold text-gray-600 rounded-t-lg border-b-2 border-transparent hover:bg-gray-200 transition"><span class="icon">📝</span>သဒ္ဒါ</button>
+                    </nav>
+                </div>
+
+                <div id="tab-content">
+                    <div id="vocabulary-content" class="tab-pane">
+                        <p class="text-center text-muted mb-4">ဤဝေါဟာရများကို လေ့လာရန် ကတ်ကိုနှိပ်ပါ။</p>
+                        <input type="text" id="vocab-search" placeholder="စကားလုံးရှာရန်..." class="w-full p-3 mb-6 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <div id="vocabulary-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        </div>
+                    </div>
+                    <div id="phrases-content" class="tab-pane hidden">
+                        <p class="text-center text-muted mb-4">ဤအသုံးအနှုန်းများကို လေ့လာရန် ကတ်ကိုနှိပ်ပါ။</p>
+                        <input type="text" id="phrase-search" placeholder="အသုံးအနှုန်းရှာရန်..." class="w-full p-3 mb-6 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <div id="phrases-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        </div>
+                    </div>
+                    <div id="grammar-content" class="tab-pane hidden">
+                         <p class="text-center text-muted mb-4">Day 1 အတွက် အဓိကကျသော သဒ္ဒါหัวข้อများ။</p>
+                        <div id="grammar-list" class="bg-white p-6 rounded-lg shadow-sm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_API_KEY"></script>
+    <script>
+        /* ...existing code... */
+        // (data objects: allVocabData, allPhraseData, grammarData are unchanged and remain above in the original file)
+    </script>
+
+    <script>
+        // ...existing code...
+        // UI + interaction (unchanged logic) — kept but use variables where colors matter
+        const vocabGrid = document.getElementById('vocabulary-grid');
+        const phraseGrid = document.getElementById('phrases-grid');
+        const grammarList = document.getElementById('grammar-list');
+        const vocabSearch = document.getElementById('vocab-search');
+        const phraseSearch = document.getElementById('phrase-search');
+        const tabs = document.getElementById('tabs');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        const daySelect = document.getElementById('day-select');
+
+        let currentDay = 'Day 1';
+        let currentTab = 'vocabulary';
+
+        // Dropdown menu populate
+        for (let i = 1; i <= 100; i++) {
+            const option = document.createElement('option');
+            option.value = `Day ${i}`;
+            option.innerText = `Day ${i}`;
+            daySelect.appendChild(option);
+        }
+
+        function createCard(item) {
+            const card = document.createElement('div');
+            card.className = 'flip-card h-32 cursor-pointer';
+            card.innerHTML = `
+                <div class="flip-card-inner">
+                    <div class="flip-card-front font-semibold text-lg p-2">${item.en}</div>
+                    <div class="flip-card-back font-semibold text-lg p-2">${item.my}</div>
+                </div>
+            `;
+            card.addEventListener('click', () => {
+                card.classList.toggle('is-flipped');
+                if (card.classList.contains('is-flipped')) {
+                    if (typeof responsiveVoice !== 'undefined') {
+                        responsiveVoice.speak(item.en, "UK English Male");
+                    }
+                }
+            });
+            return card;
+        }
+
+        function displayData(day, tab) {
+            if (tab === 'vocabulary') {
+                vocabGrid.innerHTML = '';
+                const data = allVocabData[day] || [];
+                data.forEach(item => vocabGrid.appendChild(createCard(item)));
+            } else if (tab === 'phrases') {
+                phraseGrid.innerHTML = '';
+                const data = allPhraseData[day] || [];
+                data.forEach(item => phraseGrid.appendChild(createCard(item)));
+            } else if (tab === 'grammar') {
+                grammarList.innerHTML = '';
+                const ul = document.createElement('ul');
+                ul.className = 'space-y-4';
+                grammarData.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'flex justify-between items-center';
+                    li.innerHTML = `<span class="font-semibold text-gray-700">${item.en}</span><span class="text-blue-500 font-medium">${item.my}</span>`;
+                    ul.appendChild(li);
+                });
+                grammarList.appendChild(ul);
+            }
+        }
+
+        function filterCards(grid, searchTerm) {
+            const cards = grid.children;
+            for (let card of cards) {
+                const frontText = card.querySelector('.flip-card-front').textContent.toLowerCase();
+                const backText = card.querySelector('.flip-card-back').textContent.toLowerCase();
+                if (frontText.includes(searchTerm) || backText.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+        }
+
+        vocabSearch.addEventListener('keyup', () => {
+            filterCards(vocabGrid, vocabSearch.value.toLowerCase());
+        });
+
+        phraseSearch.addEventListener('keyup', () => {
+            filterCards(phraseGrid, phraseSearch.value.toLowerCase());
+        });
+
+        tabs.addEventListener('click', (e) => {
+            const targetButton = e.target.closest('.tab-btn');
+            if (targetButton) {
+                currentTab = targetButton.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
+                targetButton.classList.add('tab-active');
+
+                tabPanes.forEach(pane => {
+                    if (pane.id === `${currentTab}-content`) {
+                        pane.classList.remove('hidden');
+                    } else {
+                        pane.classList.add('hidden');
+                    }
+                });
+                displayData(currentDay, currentTab);
+            }
+        });
+
+        daySelect.addEventListener('change', (e) => {
+            currentDay = e.target.value;
+            displayData(currentDay, currentTab);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayData(currentDay, currentTab);
+            // ensure the day-select reflects currentDay
+            daySelect.value = currentDay;
+        });
+
+        // Theme handling: warm (default) <-> dark
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeLabel = document.getElementById('theme-label');
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.setAttribute('aria-pressed', 'true');
+                themeIcon.textContent = '🌙';
+                themeLabel.textContent = 'Dark';
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                themeToggle.setAttribute('aria-pressed', 'false');
+                themeIcon.textContent = '🌤️';
+                themeLabel.textContent = 'Warm';
+            }
+        }
+
+        // Initialize theme from localStorage or prefers-color-scheme
+        (function initTheme() {
+            const saved = localStorage.getItem('ielts_theme');
+            if (saved) {
+                applyTheme(saved);
+            } else {
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyTheme(prefersDark ? 'dark' : 'warm');
+            }
+        })();
+
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'warm';
+            const next = current === 'dark' ? 'warm' : 'dark';
+            applyTheme(next);
+            localStorage.setItem('ielts_theme', next);
+        });
+    </script>
+</body>
+</html>
+<!-- ...existing code... -->
